@@ -1,0 +1,22 @@
+[
+  {
+    "id": "c77ef976-457c-4e9b-9877-521fec817cc3",
+    "name": "JavaScript",
+    "description": "A versatile programming language used primarily for web development"
+  },
+  {
+    "id": "5acdd8c2-27a4-4fd1-8d58-f25e300bcc0a",
+    "name": "TypeScript",
+    "description": "A strongly typed superset of JavaScript that compiles to plain JavaScript"
+  },
+  {
+    "id": "933f202a-03ef-4f45-88ad-0054423eec67",
+    "name": "NestJS",
+    "description": "A progressive Node.js framework for building scalable server-side applications"
+  },
+  {
+    "id": "d1fa45f9-7cca-41e7-9050-c36938fd1449",
+    "name": "Python",
+    "description": "Object oriented programming language"
+  }
+]

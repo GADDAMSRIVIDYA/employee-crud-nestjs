@@ -1,0 +1,64 @@
+[
+  {
+    "id": "55495c91-00a1-47b1-8bcc-1e174eb85d9a",
+    "empNumber": "E002",
+    "name": "navya",
+    "email": "gaddamsrividya@gmail.com",
+    "position": "Software Developer",
+    "hireDate": "2025-11-14",
+    "skills": [
+      "skill1",
+      "skill2",
+      "933f202a-03ef-4f45-88ad-0054423eec67",
+      "5acdd8c2-27a4-4fd1-8d58-f25e300bcc0a"
+    ],
+    "role": "admin",
+    "password": "$2b$10$4AtViNlsrrtj304wjPDzpOM7xnpFkcf3sewkXvheWarhAXwAOpiNe",
+    "engagementScore": 0
+  },
+  {
+    "id": "976d3d9e-d227-4260-8e75-1dad9bc5d309",
+    "empNumber": "E003",
+    "name": "raju",
+    "email": "raju@gmail.com",
+    "position": "Software Developer",
+    "hireDate": "2025-11-14",
+    "skills": [
+      "skill1",
+      "skill2",
+      "5acdd8c2-27a4-4fd1-8d58-f25e300bcc0a",
+      "933f202a-03ef-4f45-88ad-0054423eec67"
+    ],
+    "role": "admin",
+    "password": "$2b$10$p7fDtHicGTDNjv8Mc6ZUd.5bqNBkwVhu6UBFy2qXFuSpVlIbUjSCq",
+    "engagementScore": 0
+  },
+  {
+    "id": "abd4b1c4-2fd4-4799-83cb-fe4bfc594231",
+    "empNumber": "E005",
+    "name": "sri",
+    "email": "sri@gmail.com",
+    "role": "employee",
+    "department": "Management",
+    "position": "HR Manager",
+    "salary": 60000,
+    "password": "$2b$10$ZqzPfCVptfo2qFBmVv763.rCigT4mzB3xXCS3NciorSidik8p155S",
+    "engagementScore": 0,
+    "skills": [
+      "933f202a-03ef-4f45-88ad-0054423eec67",
+      "5acdd8c2-27a4-4fd1-8d58-f25e300bcc0a"
+    ]
+  },
+  {
+    "id": "2ca13eae-0f1c-49a0-b192-380f0e71dfdf",
+    "empNumber": "E007",
+    "name": "ramya",
+    "email": "ramya@gmail.com",
+    "role": "employee",
+    "department": "Management",
+    "position": "HR Manager",
+    "salary": 60000,
+    "password": "$2b$10$1Jh.gGn31ZGbaogqUIPGYu.bVq/WXgQEZrFV8S7TRiOvErWdCGu7G",
+    "engagementScore": 0
+  }
+]
