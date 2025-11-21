@@ -7,12 +7,15 @@ import { AuthModule } from 'src/auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Employee, EmployeeSchema } from './schemas/employee.schema';
 import { Skill, SkillSchema } from 'src/skills/schemas/skill.schema';
+import { AnalyticsModule } from 'src/analytics/analytics.module';
+
+
 
 @Module({
   imports: [//registering Mongoose models in a module
     MongooseModule.forFeature([{ name: Employee.name, schema: EmployeeSchema }]),
-    MongooseModule.forFeature([{ name: Skill.name, schema: SkillSchema }])
-  ],
+    MongooseModule.forFeature([{ name: Skill.name, schema: SkillSchema }]),
+   forwardRef(() => AnalyticsModule)],
   controllers: [EmployeesController],
   providers: [EmployeesService],
   exports: [EmployeesService],

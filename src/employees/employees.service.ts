@@ -1,183 +1,3 @@
-// import { 
-//   Injectable, 
-//   NotFoundException, 
-//   ForbiddenException, 
-//   BadRequestException 
-// } from '@nestjs/common';
-
-// import { DatabaseService } from 'src/database/database.service';
-// import { v4 as uuid } from 'uuid';
-// import { CreateEmployeeDto } from './dto/create-employee.dto';
-// import { UpdateEmployeeDto } from './dto/update-employee.dto';
-// import * as bcrypt from 'bcryptjs';
-// import { SkillsService } from 'src/skills/skills.service';
-
-// @Injectable()
-// export class EmployeesService {
-//   private readonly fileName = 'employees.json';
-
-//   constructor(
-//     private readonly db: DatabaseService,
-//     private readonly skillsService: SkillsService
-//   ) {}
-
-//   async findByEmail(email: string) {
-//     const employees = await this.db.readDb(this.fileName);
-//     return employees.find(emp => emp.email === email);
-//   }
-
-//   async getAll() {
-//     return this.db.readDb(this.fileName);
-//   }
-
-//   async getById(id: string) {
-//     const employees = await this.db.readDb(this.fileName);
-//     const employee = employees.find(emp => emp.id === id);
-
-//     if (!employee) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     return employee;
-//   }
-
-//   async getByEmpNumber(empNumber: string, user: any) {
-//     const employees = await this.db.readDb(this.fileName);
-//     const employee = employees.find(emp => emp.empNumber === empNumber);
-
-//     if (!employee) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     // Allow admin
-//     if (user.role === 'admin') {
-//       return employee;
-//     }
-
-//     // Allow user to access only their own data
-//     if (user.empNumber === empNumber) {
-//       return employee;
-//     }
-
-//     throw new ForbiddenException('You are not allowed to access this data');
-//   }
-
-//   async create(createDto: CreateEmployeeDto) {
-//     const employees = await this.db.readDb(this.fileName);
-
-//     if (employees.some(emp => emp.empNumber === createDto.empNumber)) {
-//       throw new BadRequestException('Employee number must be unique');
-//     }
-
-//     if (employees.some(emp => emp.email === createDto.email)) {
-//       throw new BadRequestException('Email must be unique');
-//     }
-
-//     const hashedPassword = await bcrypt.hash(createDto.password, 10);
-//     const { password, ...rest } = createDto;
-
-//     const newEmployee = {
-//       id: uuid(),
-//       ...rest,
-//       password: hashedPassword,
-//       engagementScore: 0,
-//     };
-
-//     employees.push(newEmployee);
-//     await this.db.writeDb(this.fileName, employees);
-
-//     return newEmployee;
-//   }
-
-//   async update(id: string, updateDto: UpdateEmployeeDto) {
-//     const employees = await this.db.readDb(this.fileName);
-
-//     const index = employees.findIndex(emp => emp.id === id);
-//     if (index === -1) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     if (
-//       updateDto.empNumber &&
-//       employees.some(emp => emp.empNumber === updateDto.empNumber && emp.id !== id)
-//     ) {
-//       throw new BadRequestException('Employee number must be unique');
-//     }
-
-//     if (
-//       updateDto.email &&
-//       employees.some(emp => emp.email === updateDto.email && emp.id !== id)
-//     ) {
-//       throw new BadRequestException('Email must be unique');
-//     }
-
-//     if (updateDto.password) {
-//       updateDto.password = await bcrypt.hash(updateDto.password, 10);
-//     }
-
-//     employees[index] = { ...employees[index], ...updateDto };
-
-//     await this.db.writeDb(this.fileName, employees);
-//     return employees[index];
-//   }
-
-//   async remove(id: string) {
-//     const employees = await this.db.readDb(this.fileName);
-//     const index = employees.findIndex(emp => emp.id === id);
-
-//     if (index === -1) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     const [deleted] = employees.splice(index, 1);
-//     await this.db.writeDb(this.fileName, employees);
-
-//     return deleted;
-//   }
-
-//   async increaseEngagement(empNumber: string, points: number) {
-//     const employees = await this.db.readDb(this.fileName);
-//     const employee = employees.find(emp => emp.empNumber === empNumber);
-
-//     if (!employee) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     employee.engagementScore += points;
-//     await this.db.writeDb(this.fileName, employees);
-
-//     return employee;
-//   }
-
-//   async addSkillToEmployee(id: string, skillId: string) {
-//     const employees = await this.db.readDb(this.fileName);
-//     const employee = employees.find(emp => emp.id === id);
-
-//     if (!employee) {
-//       throw new NotFoundException('Employee not found');
-//     }
-
-//     const skill = await this.skillsService.getById(skillId);
-//     if (!skill) {
-//       throw new NotFoundException('Skill not found');
-//     }
-
-//     if (!Array.isArray(employee.skills)) {
-//       employee.skills = [];
-//     }
-
-//     if (employee.skills.includes(skillId)) {
-//       throw new BadRequestException('Skill already assigned to this employee');
-//     }
-
-//     employee.skills.push(skillId);
-//     await this.db.writeDb(this.fileName, employees);
-
-//     return employee;
-//   }
-// }
-
-
 import {
   Injectable,
   NotFoundException,
@@ -195,16 +15,21 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Types } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { AnalyticsService } from 'src/analytics/analytics.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class EmployeesService {
   constructor(
-    @InjectModel(Employee.name)
-    private employeeModel: Model<Employee>,
+  @InjectModel(Employee.name)
+  private readonly employeeModel: Model<Employee>,
 
-    @InjectModel(Skill.name)//Give me the Mongoose model for the Skill collection
-    private skillModel: Model<Skill>,//This is a Mongoose model for Skill documents
-  ) {}
+  @InjectModel(Skill.name)
+  private readonly skillModel: Model<Skill>,
+
+  @Inject(forwardRef(() => AnalyticsService))
+  private readonly analyticsService: AnalyticsService,
+) {}
 
   async findByEmail(email: string) {
     return this.employeeModel.findOne({ email }).exec();
@@ -277,14 +102,6 @@ export class EmployeesService {
     return employee;
   }
 
-  async increaseEngagement(empNumber: string, points: number) {
-    const employee = await this.employeeModel.findOne({ empNumber }).exec();
-    if (!employee) throw new NotFoundException('Employee not found');
-    employee.engagementScore += points;
-    await employee.save();
-    return employee;
-  }
-
   async addSkillToEmployee(id: string, skillId: string) {
     const employee = await this.employeeModel.findById(id).populate('skills').exec();
     if (!employee) throw new NotFoundException('Employee not found');
@@ -300,7 +117,11 @@ export class EmployeesService {
 
     employee.skills.push(new Types.ObjectId(skillId));
     await employee.save();
-    //return employee;
+
+    const  newscore = await this.analyticsService.calculateEngagementScore(id); 
+    employee.engagementScore = newscore;
+    await  employee.save();
+
     const updatedEmployee= await this.employeeModel.findById(id).populate('skills').exec();
     return updatedEmployee;
   }

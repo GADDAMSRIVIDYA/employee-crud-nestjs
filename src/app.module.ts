@@ -12,11 +12,12 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-guards';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { ReportsModule } from './reports/reports.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,11 +28,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
         mongoose.connection.on('connected', () => {
           console.log('💚 MongoDB Connected Successfully!');
         });
-
         mongoose.connection.on('error', (err) => {
           console.log('❌ MongoDB Connection Error:', err);
         });
-
         return { uri };
       },
     }),
@@ -42,6 +41,8 @@ import { RolesGuard } from './auth/guards/roles.guard';
     EmployeesModule,
     SkillsModule,
     AuthModule,
+    ReportsModule,
+    AnalyticsModule,
   ],
 
   controllers: [AppController],
