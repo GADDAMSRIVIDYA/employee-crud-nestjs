@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { forwardRef } from '@nestjs/common';
 
 @Module({
-  imports:[ forwardRef(() => EmployeesModule),
+  imports:[forwardRef(() => EmployeesModule),
   ],
   controllers: [AnalyticsController],
   providers: [AnalyticsService],

@@ -1,65 +1,76 @@
-import { Controller } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
-import{ Get, Post, Patch, Delete, Param, Body,UseGuards} from '@nestjs/common';
-import {CreateEmployeeDto} from './dto/create-employee.dto';
-import { getEmployeeDto } from './dto/get-employee-id.Dto';
-
-import {UpdateEmployeeDto} from './dto/update-employee.dto';
-import { getEmployeeNumberDto } from './dto/get-employee-number.Dto';
-
+import { Controller, Get, Post, Patch, Delete, Param, Body, Req, Query } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-guards';
-import { Roles } from 'src/auth/decorators/roles.decorators';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { GetEmployeeDto } from './dto/get-employee-id.Dto';
+import { GetEmployeeNumberDto } from './dto/get-employee-number.Dto';
 import { AddSkillDto } from './dto/add-skill.dto';
-import { Req } from '@nestjs/common';
+import { GetEmployeeNameDto } from './dto/get-employeeName.dto';
 
+import { Roles } from 'src/auth/decorators/roles.decorators';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { validatePaginationQuery } from 'src/common/validators/pagination.validator';
 
+@ApiTags('employees')          
+@ApiBearerAuth()              
 @Controller('employees')
 export class EmployeesController {
-    constructor(private readonly employeeService: EmployeesService) {}
+  constructor(private readonly employeeService: EmployeesService) {}
 
-  @Roles('admin')
   @Post('add')
+  @ApiOperation({ summary: 'Create a new employee' })
+  @ApiResponse({ status: 201, description: 'Employee created successfully' })
   create(@Body() createDto: CreateEmployeeDto) {
     return this.employeeService.create(createDto);
   }
-  @Roles('admin')
+
   @Patch('update/:id')
-  update(@Param() Params:getEmployeeDto, @Body() updateDto: UpdateEmployeeDto) {
-    return this.employeeService.update(Params.id, updateDto);
-  }
-  @Roles('admin')
-  @Get()
-  getAll() {
-    return this.employeeService.getAll();
+  @ApiOperation({ summary: 'Update an employee by ID' })
+  @ApiResponse({ status: 200, description: 'Employee updated successfully' })
+  update(@Param() params: GetEmployeeDto, @Body() updateDto: UpdateEmployeeDto) {
+    return this.employeeService.update(params.id, updateDto);
   }
 
 
-  @Roles('admin')
+@Get()//http://localhost:3000/employees?pagination=true&from=0&to=2&sortField=empNumber&sortOrder=desc
+@ApiOperation({ summary: 'Get all employees with optional pagination' })
+@ApiResponse({ status: 200, description: 'List of employees' })
+@ApiResponse({ status: 400, description: 'Invalid query parameters' })
+
+async getAll(@Query() query: PaginationQueryDto) {
+  const { pagination, from, to, filter, sort} = validatePaginationQuery(
+    query.pagination,query.from,query.to,query.search, query.searchField,
+     query.op,query.sortField,query.sortOrder);
+  return this.employeeService.getAll(pagination, from, to,filter, sort);
+}
+
+
   @Get('id/:id')
-  getById(@Param() params: getEmployeeDto) {
-  return this.employeeService.getById(params.id);
-}
-
+  @ApiOperation({ summary: 'Get employee by ID' })
+  @ApiResponse({ status: 200, description: 'Employee found' })
+  getById(@Param() params: GetEmployeeDto) {
+    return this.employeeService.getById(params.id);
+  }
+  @Roles('admin', 'employee')
   @Get('empNumber/:empNumber')
-  getByEmpNumber(@Param() params: getEmployeeNumberDto, @Req() req) {
-  return this.employeeService.getByEmpNumber(params.empNumber, req.user);
-}
-
-
-  @Roles('admin')  
-  @Delete('delete/:id')
-  remove(@Param() Params:getEmployeeDto) {
-    return this.employeeService.remove(Params.id);
+  @ApiOperation({ summary: 'Get employee by employee number' })
+  @ApiResponse({ status: 200, description: 'Employee found' })
+  getByEmpNumber(@Param() params: GetEmployeeNumberDto, @Req() req) {
+    return this.employeeService.getByEmpNumber(params.empNumber, req.user);
   }
 
-  @Roles('admin')
+  @Delete('delete/:id')
+  @ApiOperation({ summary: 'Delete an employee by ID' })
+  @ApiResponse({ status: 200, description: 'Employee deleted successfully' })
+  remove(@Param() params: GetEmployeeDto) {
+    return this.employeeService.remove(params.id);
+  }
+
   @Post(':id/skills')
-  addSkill(@Param() params: getEmployeeDto,@Body() body: AddSkillDto) {
-  return this.employeeService.addSkillToEmployee(params.id, body.skillId);
+  @ApiOperation({ summary: 'Add a skill to an employee' })
+  @ApiResponse({ status: 200, description: 'Skill added to employee successfully' })
+  addSkill(@Param() params: GetEmployeeDto, @Body() body: AddSkillDto) {
+    return this.employeeService.addSkillToEmployee(params.id, body.skillId);
+  }
 }
-
-}
-    
-
-

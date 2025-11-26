@@ -45,7 +45,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     AnalyticsModule,
   ],
 
-  controllers: [AppController],
+  //controllers: [AppController],
 
   providers: [
     AppService,

@@ -17,6 +17,7 @@ import { Types } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { AnalyticsService } from 'src/analytics/analytics.service';
 import { Inject, forwardRef } from '@nestjs/common';
+import {getCommonList} from 'src/common/aggregations/facet-aggregation';
 
 @Injectable()
 export class EmployeesService {
@@ -35,9 +36,16 @@ export class EmployeesService {
     return this.employeeModel.findOne({ email }).exec();
   }
 
-  async getAll() {
-    return this.employeeModel.find().exec();
-  }
+  async getAll(
+  pagination?: boolean,
+  from: number = 0,
+  to: number = 10,
+  filter:any={},
+  sort:any={}
+) {
+  return getCommonList(this.employeeModel, pagination, from, to, filter, sort);
+}
+
 
   async getById(id: string) {
     const employee = await this.employeeModel.findById(id).exec();

@@ -6,6 +6,7 @@ import { UpdateSkillDto } from './dto/update-skill.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {Skill} from './schemas/skill.schema';
+import {getCommonList} from 'src/common/aggregations/facet-aggregation';
 
 @Injectable()
 export class SkillsService {
@@ -17,9 +18,16 @@ export class SkillsService {
     
   ) {}
 
-  async getAll() {
-    return this.skillModel.find().exec();
-  }
+  async getAll(
+  pagination?: boolean,
+  from: number = 0,
+  to: number = 10,
+  filter:any={},
+  sort:any={}
+) {
+  return getCommonList(this.skillModel, pagination, from, to, filter, sort);
+}
+
 
   async getById(id: string) {
     const skills = await this.skillModel.findById(id).exec();

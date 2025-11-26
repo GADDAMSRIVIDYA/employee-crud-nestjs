@@ -10,7 +10,6 @@ import { Model } from 'mongoose';
 
 @Module({
   imports:[
-    //MongooseModule.forFeature([{name:Employee.name,schema:EmployeeSchema}]),
     MongooseModule.forFeature([{name:Skill.name,schema:SkillSchema}])
   ],
   controllers: [ReportsController],

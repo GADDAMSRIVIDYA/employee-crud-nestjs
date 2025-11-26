@@ -18,7 +18,12 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials');
   }
 
+// const p="$2b$10$p7fDtHicGTDNjv8Mc6ZUd.5bqNBkwVhu6UBFy2qXFuSpVlIbUjSCq";
+// const match=await bcrypt.compare("rajuP@ssword123",p);
+// console.log(match);
+
   const passwordMatches = await bcrypt.compare(password, employee.password); 
+  
   if (!passwordMatches) {
     throw new UnauthorizedException('Invalid credentials');
   }

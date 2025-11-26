@@ -9,9 +9,9 @@ import { Inject, forwardRef } from '@nestjs/common';
 @Injectable()
 export class AnalyticsService {
    constructor(
-  @Inject(forwardRef(() => EmployeesService))
-  private readonly employeeService: EmployeesService
-) {}
+    @Inject(forwardRef(() => EmployeesService))
+    private readonly employeeService: EmployeesService,
+  ) {}
 
    async calculateEngagementScore(id:string):Promise<number>{
       const employee=await this.employeeService.getById(id);
